@@ -3,13 +3,8 @@ import {context, getOctokit} from '@actions/github';
 
 async function run() {
     try {
-        if (context.eventName !== 'pull_request') {
-            setFailed(`Invalid event: ${context.eventName}, it should be use on pull_request`);
-            return;
-        }
-
-        const minimum_approvals = Number.parseInt(getInput("minimum_approvals"), 10);
-        if (Number.isNaN(minimum_approvals) || minimum_approvals < 1) {
+        const minimumApprovals = Number.parseInt(getInput("minimum_approvals"), 10);
+        if (Number.isNaN(minimumApprovals) || minimumApprovals < 1) {
             setFailed(`Invalid input count of input.minimum_approvals`);
         }
 
@@ -36,10 +31,10 @@ async function run() {
         }
 
         const number_of_approvals = userReviewsStates.filter((status) => status === 'APPROVED').length;
-        if (number_of_approvals >= minimum_approvals) {
+        if (number_of_approvals >= minimumApprovals) {
             info(`This Pull Request has enough approvals to be merged`);
         } else {
-            setFailed(`This Pull Request needs at least '${minimum_approvals}' approval(s)`);
+            setFailed(`This Pull Request needs at least '${minimumApprovals}' approval(s)`);
         }
         return;
     } catch (e) {
